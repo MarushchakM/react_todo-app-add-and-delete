@@ -1,26 +1,132 @@
-/* eslint-disable max-len */
+/* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable jsx-a11y/control-has-associated-label */
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { UserWarning } from './UserWarning';
-
-const USER_ID = 0;
+import * as todoServices from './api/todos';
+import { Header } from './components/Header';
+import { TodoList } from './components/TodoList';
+import { Footer } from './components/Footer';
+import { ErrorMassage } from './components/ErrorMassage';
+import { Todo } from './types/Todo';
+import { Filter } from './types/Filter';
+import { filterTodos } from './services/todoFunction';
 
 export const App: React.FC = () => {
-  if (!USER_ID) {
+  const [errorMassage, setErrorMassage] = useState('');
+  const [todos, setTodos] = useState<Todo[] | []>([]);
+  const [filterData, setFilterData] = useState<Filter>('All');
+  const [isLoadTodo, setIsLoadTodo] = useState(false);
+  const [tempTodo, setTempoTodo] = useState<Todo | null>(null);
+  const [deletedIds, setDeletedIds] = useState<number[]>([]);
+
+  useEffect(() => {
+    todoServices
+      .getTodos()
+      .then(response => {
+        setTodos(response);
+      })
+      .catch(() => {
+        setErrorMassage('Unable to load todos');
+      });
+  }, []);
+
+  const handleAddTodo = (title: string) => {
+    if (title.length === 0) {
+      setErrorMassage('Title should not be empty');
+
+      return;
+    }
+
+    setIsLoadTodo(true);
+    setTempoTodo({
+      id: 0,
+      userId: todoServices.USER_ID,
+      title,
+      completed: false,
+    });
+    todoServices
+      .createTodos({
+        title,
+        userId: todoServices.USER_ID,
+        completed: false,
+      })
+      .then(newTodo => {
+        setTodos(currentTodos => [...(currentTodos || []), newTodo]);
+      })
+      .catch(() => {
+        setErrorMassage('Unable to add a todo');
+      })
+      .finally(() => {
+        setIsLoadTodo(false);
+        setTempoTodo(null);
+      });
+  };
+
+  const handleDeleteTodo = (todosId: number[]) => {
+    setDeletedIds(todosId);
+    todosId.map(todoId => {
+      todoServices
+        .deleteTodos(todoId)
+        .then(() => {
+          setTodos(currentTodos =>
+            currentTodos?.filter(todo => todo.id !== todoId),
+          );
+        })
+        .catch(() => {
+          setErrorMassage('Unable to delete a todo');
+        })
+        .finally(() => setDeletedIds([]));
+    });
+  };
+
+  const hideError = () => {
+    setErrorMassage('');
+  };
+
+  if (errorMassage.length > 0) {
+    setTimeout(() => {
+      setErrorMassage('');
+    }, 3000);
+  }
+
+  const handleFilterData = (data: Filter) => {
+    setFilterData(data);
+  };
+
+  const filteredTodos = todos ? filterTodos(todos, filterData) : [];
+
+  if (!todoServices.USER_ID) {
     return <UserWarning />;
   }
 
   return (
-    <section className="section container">
-      <p className="title is-4">
-        Copy all you need from the prev task:
-        <br />
-        <a href="https://github.com/mate-academy/react_todo-app-loading-todos#react-todo-app-load-todos">
-          React Todo App - Load Todos
-        </a>
-      </p>
+    <div className="todoapp">
+      <h1 className="todoapp__title">todos</h1>
 
-      <p className="subtitle">Styles are already copied</p>
-    </section>
+      <div className="todoapp__content">
+        <Header
+          onTitle={handleAddTodo}
+          todos={todos}
+          loading={isLoadTodo}
+          error={errorMassage}
+        />
+        {filteredTodos && filteredTodos.length !== 0 && (
+          <TodoList
+            todos={filteredTodos}
+            deleteTodo={handleDeleteTodo}
+            tempTodo={tempTodo}
+            deletedIds={deletedIds}
+          />
+        )}
+        {todos && todos.length !== 0 && (
+          <Footer
+            filterData={handleFilterData}
+            todos={todos}
+            deleteTodos={handleDeleteTodo}
+          />
+        )}
+      </div>
+      <ErrorMassage errorMassage={errorMassage} hideError={hideError} />
+    </div>
   );
 };
