@@ -5,6 +5,7 @@ import {
   completedTodoId,
   notCompletedTodoCounter,
 } from '../../services/todoFunction';
+import classNames from 'classnames';
 
 type Props = {
   filterData: (value: Filter) => void;
@@ -34,8 +35,10 @@ export const Footer: React.FC<Props> = ({ filterData, todos, deleteTodos }) => {
           <a
             key={filterName}
             href="#/"
-            className={`filter__link ${select === filterName && 'selected'}`}
-            data-cy="FilterLinkAll"
+            className={classNames('filter__link', {
+              selected: select === filterName,
+            })}
+            data-cy={classNames('FilterLink' + filterName)}
             onClick={() => handleClick(filterName)}
           >
             {filterName}

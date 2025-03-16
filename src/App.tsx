@@ -22,9 +22,7 @@ export const App: React.FC = () => {
   useEffect(() => {
     todoServices
       .getTodos()
-      .then(response => {
-        setTodos(response);
-      })
+      .then(setTodos)
       .catch(() => {
         setErrorMassage('Unable to load todos');
       });
@@ -110,7 +108,7 @@ export const App: React.FC = () => {
           loading={isLoadTodo}
           error={errorMassage}
         />
-        {filteredTodos && filteredTodos.length !== 0 && (
+        {!!filteredTodos.length && (
           <TodoList
             todos={filteredTodos}
             deleteTodo={handleDeleteTodo}
@@ -118,7 +116,7 @@ export const App: React.FC = () => {
             deletedIds={deletedIds}
           />
         )}
-        {todos && todos.length !== 0 && (
+        {!!todos.length && (
           <Footer
             filterData={handleFilterData}
             todos={todos}

@@ -1,3 +1,5 @@
+import classNames from 'classnames';
+
 type Props = {
   errorMassage: string;
   hideError: () => void;
@@ -7,13 +9,19 @@ export const ErrorMassage: React.FC<Props> = ({ errorMassage, hideError }) => {
   return (
     <div
       data-cy="ErrorNotification"
-      className={`notification is-danger is-light has-text-weight-normal ${errorMassage.length > 0 ? '' : 'hidden'}`}
+      className={classNames(
+        'notification',
+        'is-danger',
+        'is-light',
+        'has-text-weight-normal',
+        { hidden: errorMassage.length === 0 },
+      )}
     >
       <button
         data-cy="HideErrorButton"
         type="button"
         className="delete"
-        onClick={() => hideError()}
+        onClick={hideError}
       />
       {/* show only one message at a time */}
       {errorMassage}
