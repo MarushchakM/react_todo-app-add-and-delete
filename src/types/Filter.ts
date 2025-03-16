@@ -1,1 +1,5 @@
-export type Filter = 'Active' | 'All' | 'Completed';
+export enum Filter {
+  All = 'All',
+  Active = 'Active',
+  Completed = 'Completed',
+}

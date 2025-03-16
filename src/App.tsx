@@ -14,7 +14,7 @@ import { filterTodos } from './services/todoFunction';
 export const App: React.FC = () => {
   const [errorMassage, setErrorMassage] = useState('');
   const [todos, setTodos] = useState<Todo[] | []>([]);
-  const [filterData, setFilterData] = useState<Filter>('All');
+  const [filterData, setFilterData] = useState<Filter>(Filter.All);
   const [isLoadTodo, setIsLoadTodo] = useState(false);
   const [tempTodo, setTempoTodo] = useState<Todo | null>(null);
   const [deletedIds, setDeletedIds] = useState<number[]>([]);

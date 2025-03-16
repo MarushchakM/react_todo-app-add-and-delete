@@ -1,12 +1,12 @@
 import { Filter } from '../types/Filter';
 import { Todo } from '../types/Todo';
 
-export const filterTodos = (todoArr: Todo[], filterData: Filter): Todo[] => {
-  if (filterData === 'Active') {
+export const filterTodos = (todoArr: Todo[], filter: Filter): Todo[] => {
+  if (filter === Filter.Active) {
     return todoArr.filter(todo => !todo.completed);
   }
 
-  if (filterData === 'Completed') {
+  if (filter === Filter.Completed) {
     return todoArr.filter(todo => todo.completed);
   }
 

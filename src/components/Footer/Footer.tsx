@@ -13,7 +13,7 @@ type Props = {
 };
 
 export const Footer: React.FC<Props> = ({ filterData, todos, deleteTodos }) => {
-  const [select, setSelect] = useState('All');
+  const [select, setSelect] = useState(Filter.All);
 
   const handleClick = (filter: Filter) => {
     setSelect(filter);
@@ -30,32 +30,17 @@ export const Footer: React.FC<Props> = ({ filterData, todos, deleteTodos }) => {
 
       {/* Active link should have the 'selected' class */}
       <nav className="filter" data-cy="Filter">
-        <a
-          href="#/"
-          className={`filter__link ${select === 'All' && 'selected'}`}
-          data-cy="FilterLinkAll"
-          onClick={() => handleClick('All')}
-        >
-          All
-        </a>
-
-        <a
-          href="#/active"
-          className={`filter__link ${select === 'Active' && 'selected'}`}
-          data-cy="FilterLinkActive"
-          onClick={() => handleClick('Active')}
-        >
-          Active
-        </a>
-
-        <a
-          href="#/completed"
-          className={`filter__link ${select === 'Completed' && 'selected'}`}
-          data-cy="FilterLinkCompleted"
-          onClick={() => handleClick('Completed')}
-        >
-          Completed
-        </a>
+        {Object.values(Filter).map(filterName => (
+          <a
+            key={filterName}
+            href="#/"
+            className={`filter__link ${select === filterName && 'selected'}`}
+            data-cy="FilterLinkAll"
+            onClick={() => handleClick(filterName)}
+          >
+            {filterName}
+          </a>
+        ))}
       </nav>
 
       <button
