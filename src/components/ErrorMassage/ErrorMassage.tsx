@@ -23,10 +23,7 @@ export const ErrorMassage: React.FC<Props> = ({ errorMassage, hideError }) => {
         className="delete"
         onClick={hideError}
       />
-      {/* show only one message at a time */}
       {errorMassage}
-      {/*
-      Unable to update a todo */}
     </div>
   );
 };

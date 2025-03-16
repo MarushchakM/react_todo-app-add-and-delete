@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Todo } from '../../types/Todo';
-import { Filter } from '../../types/Filter';
+import { Filter } from '../../enum/Filter';
 import {
   completedTodoId,
   notCompletedTodoCounter,

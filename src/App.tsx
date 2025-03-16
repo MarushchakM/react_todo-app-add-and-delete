@@ -1,15 +1,19 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable jsx-a11y/control-has-associated-label */
 import React, { useEffect, useState } from 'react';
+
 import { UserWarning } from './UserWarning';
+
 import * as todoServices from './api/todos';
+import { filterTodos } from './services/todoFunction';
+
+import { Todo } from './types/Todo';
+import { Filter, ErrorMassages } from './enum';
+
 import { Header } from './components/Header';
 import { TodoList } from './components/TodoList';
 import { Footer } from './components/Footer';
 import { ErrorMassage } from './components/ErrorMassage';
-import { Todo } from './types/Todo';
-import { Filter } from './types/Filter';
-import { filterTodos } from './services/todoFunction';
 
 export const App: React.FC = () => {
   const [errorMassage, setErrorMassage] = useState('');
@@ -24,13 +28,13 @@ export const App: React.FC = () => {
       .getTodos()
       .then(setTodos)
       .catch(() => {
-        setErrorMassage('Unable to load todos');
+        setErrorMassage(ErrorMassages.UnableToLoad);
       });
   }, []);
 
   const handleAddTodo = (title: string) => {
     if (title.length === 0) {
-      setErrorMassage('Title should not be empty');
+      setErrorMassage(ErrorMassages.EmptyTitle);
 
       return;
     }
@@ -52,7 +56,7 @@ export const App: React.FC = () => {
         setTodos(currentTodos => [...(currentTodos || []), newTodo]);
       })
       .catch(() => {
-        setErrorMassage('Unable to add a todo');
+        setErrorMassage(ErrorMassages.UnableToAdd);
       })
       .finally(() => {
         setIsLoadTodo(false);
@@ -71,7 +75,7 @@ export const App: React.FC = () => {
           );
         })
         .catch(() => {
-          setErrorMassage('Unable to delete a todo');
+          setErrorMassage(ErrorMassages.UnableToDelete);
         })
         .finally(() => setDeletedIds([]));
     });
